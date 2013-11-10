@@ -45,9 +45,11 @@
                                       @"digest",
                                       @"marketing",
                                       @"community",
-                                      @"sleeptight",
+                                      @"sleeptight", /* hotel tonight */
                                       @"please-reply",
-                                      @"member_services",
+                                      @"member_services", /* open table */
+                                      @"bounces", /* match.com */
+                                      @"mailer", /* okcupid */
                                       ];
     
     if ([bannedPrefixes containsObject:prefix]) {
