@@ -14,13 +14,10 @@
 {
     NSArray *componentsOfEmail = [fromAddress componentsSeparatedByString:@"@"];
     NSString *prefix = [componentsOfEmail firstObject];
+    NSString *suffix = ([componentsOfEmail count] > 1 ? [componentsOfEmail objectAtIndex:1] : @"*");
+    NSString *mainDomain = [[suffix componentsSeparatedByString:@"."] firstObject];
     
-    const NSArray *bannedPrefixes = @[@"noreply",
-                                      @"no-reply",
-                                      @"do-not-reply",
-                                      @"do_not_reply",
-                                      @"donotreply",
-                                      @"hello",
+    const NSArray *bannedPrefixes = @[
                                       @"notifications",
                                       @"confirmation",
                                       @"info",
@@ -41,17 +38,39 @@
                                       @"alerts",
                                       @"updates",
                                       @"news",
-                                      @"hi",
                                       @"support",
                                       @"email",
                                       @"team",
                                       @"auto-response",
                                       @"digest",
                                       @"marketing",
-                                      @"community"
-    ];
+                                      @"community",
+                                      @"sleeptight",
+                                      @"please-reply",
+                                      @"member_services",
+                                      ];
     
     if ([bannedPrefixes containsObject:prefix]) {
+        return NO;
+    }
+    
+    /* Google, for example, uses mail-noreply@gmail.com */
+    const NSArray *bannedPrefixSuffixes = @[@"noreply",
+                                           @"no-reply",
+                                           @"do-not-reply",
+                                           @"do_not_reply",
+                                           @"donotreply",
+    ];
+    for (NSString *suffix in bannedPrefixSuffixes) {
+        if ([prefix hasSuffix:suffix]) {
+            return NO;
+        }
+    }
+    
+    /* We only want to ban hi and hello if the name is like the domain (not a real person) */
+    const NSArray *simpleGreetings = @[@"hello", @"hi"];
+    NSString *simpleName = [[fromName lowercaseString] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    if ([simpleGreetings containsObject:prefix] && ([simpleName rangeOfString:mainDomain].location != NSNotFound)) {
         return NO;
     }
     

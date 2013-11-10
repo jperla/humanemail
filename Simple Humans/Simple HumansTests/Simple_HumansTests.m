@@ -44,12 +44,20 @@
     /* no-reply */
     XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Noreply" fromAddress:@"noreply@google.com" senderAddress:@"noreply@google.com"], @"No replies are not humans");
     XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Noreply" fromAddress:@"no-reply@google.com" senderAddress:@"no-reply@google.com"], @"No replies are not humans");
+    XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Noreply" fromAddress:@"mail-no-reply@google.com" senderAddress:@"no-reply@google.com"], @"No replies are not humans");
+    XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Noreply" fromAddress:@"mail-noreply@google.com" senderAddress:@"mail-noreply@google.com"], @"No replies are not humans");
     
     /* generic terms */
     XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Notifications" fromAddress:@"notifications@google.com" senderAddress:@"notifications@google.com"], @"notifications are not humans");
     
     /* special services */
+    XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Notifications" fromAddress:@"please-reply@google.com" senderAddress:@"please-reply@google.com"], @"circa news aggregator");
+    XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Notifications" fromAddress:@"sleeptight@hoteltonight.com" senderAddress:@"sleeptight@hoteltonight.com"], @"hotel tonight");
+    XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Notifications" fromAddress:@"member_services@opentable.com" senderAddress:@"member_services@opentable.com"], @"open table");
     
+    /* hi and hello are special, users may use it on their own domain */
+    XCTAssertTrue([JPHumanEmailRecognizer isHumanWithFromName:@"Joseph Perla" fromAddress:@"hi@jperla.com" senderAddress:@"hi@jperla.com"], @"legit person");
+    XCTAssertFalse([JPHumanEmailRecognizer isHumanWithFromName:@"Hotel Greetings" fromAddress:@"hi@hotelgreetings.com" senderAddress:@"hi@hotelgreetings.com"], @"yo, this is fake bro");
 }
 
 @end
